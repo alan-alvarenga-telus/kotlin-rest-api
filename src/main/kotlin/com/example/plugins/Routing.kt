@@ -19,8 +19,6 @@ fun Application.configureRouting() {
             get {
                 call.respond("Hello World!")
             }
-        }
-        route("/html-thymeleaf") {
             get("/html-thymeleaf") {
                 call.respond(ThymeleafContent(
                     "index",
