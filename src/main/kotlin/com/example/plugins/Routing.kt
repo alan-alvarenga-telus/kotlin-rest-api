@@ -52,6 +52,30 @@ fun Application.configureRouting() {
                 }
                 call.respond(task)
             }
+            get("/byPriority"){
+                val priorityAsText = call.request.queryParameters["priority"]
+                if(priorityAsText == null) {
+                    call.respond(HttpStatusCode.BadRequest)
+                    return@get
+                }
+                try {
+                    val priority = Priority.valueOf(priorityAsText)
+                    val tasks = TaskRepository.tasksByPriority(priority)
+
+                    if(tasks.isEmpty()) {
+                        call.respond(HttpStatusCode.NotFound)
+                        return@get
+                    }
+                    val data = mapOf(
+                        "priority" to priority,
+                        "tasks" to tasks
+                    )
+
+                    call.respond(ThymeleafContent("tasks-by-priority", data))
+                } catch (ex: IllegalArgumentException) {
+                    call.respond(HttpStatusCode.BadRequest)
+                }
+            }
             get("/byPriority/{priority}") {
                 val priorityAsText = call.parameters["priority"]
                 if (priorityAsText == null) {
