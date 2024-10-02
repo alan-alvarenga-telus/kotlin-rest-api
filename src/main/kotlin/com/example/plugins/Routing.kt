@@ -10,6 +10,7 @@ import io.ktor.server.http.content.*
 import io.ktor.server.request.receive
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.thymeleaf.ThymeleafContent
 
 fun Application.configureRouting() {
     routing {
@@ -17,6 +18,20 @@ fun Application.configureRouting() {
         route("/"){
             get {
                 call.respond("Hello World!")
+            }
+        }
+        route("/html-thymeleaf") {
+            get("/html-thymeleaf") {
+                call.respond(ThymeleafContent(
+                    "index",
+                    mapOf("user" to ThymeleafUser(1, "user1"))
+                ))
+            }
+        }
+        route("/ui") {
+            get {
+                val tasks = TaskRepository.allTasks()
+                call.respond(ThymeleafContent("all-tasks", mapOf("tasks" to tasks)))
             }
         }
         route("/tasks") {
